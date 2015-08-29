@@ -43,7 +43,7 @@ class View{
 	}
 
 	public function compile($file){
-		$this->compiler->compile($file);
+		return $this->compiler->compile($file);
 	}
 	
 	public function render($file = '' , $data = []){
@@ -54,8 +54,10 @@ class View{
 		extract($data);
 		ob_start();
 		$fileFormat = $this->defaultViewPath.$file;
-		if (file_exists($fileFormat)){
-			include $fileFormat;
+        $compiledView = $this->compile($fileFormat);
+		if (file_exists($compiledView)){
+
+			include $compiledView;
 		}else{
 			throw new \Exception("File [$fileFormat] Not Found.");
 		}

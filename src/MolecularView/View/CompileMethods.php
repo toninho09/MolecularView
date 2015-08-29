@@ -146,4 +146,13 @@ class CompileMethods{
     public function compile_default($expression){
         return "<?php default : ?>";
     }
+
+    /**
+     * create or redefine a new compile function
+     * @param string $name
+     * @param callable $callback
+     */
+    public function extend(string $name ,callable $callback){
+        $this->${'compile_'.$name} = $callback;
+    }
 }
