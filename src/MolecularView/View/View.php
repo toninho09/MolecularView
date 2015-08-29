@@ -5,6 +5,7 @@ class View{
 	private $file;
 	private $defaultViewPath;
 	private $data;
+	private $compiler;
 
 	function __toString(){
 		return $this->render();
@@ -15,6 +16,7 @@ class View{
 		$this->defaultViewPath = '';
 		$this->viewRender = '';
 		$this->data = [];
+		$this->compiler = new Compiler;
 	}
 
 	public function setDefaultViewPath($path){
@@ -40,6 +42,10 @@ class View{
 		}
 	}
 
+	public function compile($file){
+		$this->compiler->compile($file);
+	}
+	
 	public function render($file = '' , $data = []){
 		if(empty($file)){
 			$file = $this->file;
