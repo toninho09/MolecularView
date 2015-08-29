@@ -16,7 +16,7 @@ class View{
 		$this->defaultViewPath = '';
 		$this->viewRender = '';
 		$this->data = [];
-		$this->compiler = new Compiler;
+		$this->compiler = new Compiler();
 	}
 
 	public function setDefaultViewPath($path){
