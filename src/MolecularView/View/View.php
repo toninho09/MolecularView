@@ -6,6 +6,7 @@ class View{
 	private $defaultViewPath;
 	private $data;
 	private $compiler;
+	private $composer;
 
 	function __toString(){
 		return $this->render();
@@ -17,6 +18,7 @@ class View{
 		$this->viewRender = '';
 		$this->data = [];
 		$this->compiler = new Compiler();
+		$this->composer = new Composer();
 	}
 
 	public function setDefaultViewPath($path){
@@ -54,17 +56,23 @@ class View{
 		if(empty($file)){
 			$file = $this->file;
 		}
+		if($this->composer->hasComposer($file)){
+			$this->composer->executeComposer($this,$file);
+		}
 		extract($this->data);
 		extract($data);
 		ob_start();
 		$fileFormat = $this->defaultViewPath.$file;
         $compiledView = $this->compile($fileFormat);
 		if (file_exists($compiledView)){
-
 			include $compiledView;
 		}else{
 			throw new \Exception("File [$fileFormat] Not Found.");
 		}
 		return ob_get_clean();
+	}
+
+	public function composer($name,callable $function){
+		$this->composer->setViewComposer($name,$function);
 	}
 }

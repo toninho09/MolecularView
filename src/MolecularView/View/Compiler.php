@@ -16,11 +16,22 @@ class Compiler{
 			throw new \Exception("folder $this->folder not exist");
 	}
 
+	/**
+	 * get all the view comands
+	 * @param $code
+	 * @return mixed
+	 */
 	public function getStatements($code){
 		preg_match_all($this->inlineFindStatementsRegex, $code, $matches,PREG_SET_ORDER);
 		return $matches;
 	}
 
+	/**
+	 * compile the view and returns the file name
+	 * @param $file
+	 * @return string
+	 * @throws \Exception
+	 */
 	public function compile($file){
 		if(!is_file($file))
 			throw new \Exception("The file [$file] not exists.", 1);
@@ -32,7 +43,12 @@ class Compiler{
     	file_put_contents($this->folder. DIRECTORY_SEPARATOR . $this->getViewCacheName($file), $this->code);
 		return $this->folder. DIRECTORY_SEPARATOR . $this->getViewCacheName($file);
 	}
-	
+
+	/**
+	 * do
+	 * @param $statements
+	 * @throws \Exception
+	 */
 	private function replaceStatements($statements){
 		foreach($statements as $key => $value){
 			$method = 'compile_'.$value[1];
