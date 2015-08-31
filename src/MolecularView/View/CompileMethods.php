@@ -3,6 +3,7 @@ namespace MolecularView\View;
 
 class CompileMethods{
 
+    private $customCompile =[];
     /**
      * compile @if($expression)
      * @param $expresion
@@ -152,7 +153,30 @@ class CompileMethods{
      * @param string $name
      * @param callable $callback
      */
-    public function extend(string $name ,callable $callback){
-        $this->${'compile_'.$name} = $callback;
+    public function extend($name ,callable $callback){
+        $this->customCompile[$name] = $callback;
+    }
+
+    /**
+     * return if has a extend compile
+     * @param $name
+     * @return bool
+     */
+    public function hasExtendCompile($name){
+        return isset($this->customCompile[$name]) && is_callable($this->customCompile[$name]);
+    }
+
+    /**
+     * execute te extend function
+     * @param $name
+     * @param $param
+     * @return mixed
+     * @throws \Exception
+     */
+    public function executeExtendCompile($name,$param){
+        if($this->hasExtendCompile($name)){
+            return $this->customCompile[$name]($param);
+        }
+        throw new \Exception("function not extists",1);
     }
 }

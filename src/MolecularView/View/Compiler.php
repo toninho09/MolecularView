@@ -7,7 +7,8 @@ class Compiler{
 	private $inlineFindStatementsRegex = '/\B@(\w+)([ \t]*)(\( ( (?>[^()]+) | (?3) )* \))?/x';
 	private $folder;
 	
-	private $compileMethods = null;
+	public $compileMethods = null;
+
 	public function __construct($folder = null){
 		$this->compileMethods = new CompileMethods();
 		$this->folder = !empty($folder)? $folder : sys_get_temp_dir();
@@ -18,7 +19,7 @@ class Compiler{
 	public function getStatements($code){
 		preg_match_all($this->inlineFindStatementsRegex, $code, $matches,PREG_SET_ORDER);
 		return $matches;
-	}	
+	}
 
 	public function compile($file){
 		if(!is_file($file))
@@ -35,9 +36,11 @@ class Compiler{
 	private function replaceStatements($statements){
 		foreach($statements as $key => $value){
 			$method = 'compile_'.$value[1];
+			$params = isset($value[3]) ? $this->cleanParams($value[3]) : null;
 			if(method_exists($this->compileMethods,$method)){
-				$params = isset($value[3]) ? $this->cleanParams($value[3]) : null;
 				$this->code = str_replace($value[0],$this->compileMethods->$method($params),$this->code);
+			}elseif($this->compileMethods->hasExtendCompile($value[1])){
+				$this->code = str_replace($value[0],$this->compileMethods->executeExtendCompile($value[1],$params),$this->code);
 			}
 		}
 	}

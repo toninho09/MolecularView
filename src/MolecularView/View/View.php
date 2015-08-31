@@ -45,6 +45,10 @@ class View{
 	public function compile($file){
 		return $this->compiler->compile($file);
 	}
+
+	public function extendCompiler($name,callable $callback){
+		$this->compiler->compileMethods->extend($name,$callback);
+	}
 	
 	public function render($file = '' , $data = []){
 		if(empty($file)){
