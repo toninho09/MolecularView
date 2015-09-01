@@ -7,6 +7,7 @@ class View{
 	private $data;
 	private $compiler;
 	private $composer;
+	private $sectionManage;
 
 	function __toString(){
 		return $this->render();
@@ -19,6 +20,7 @@ class View{
 		$this->data = [];
 		$this->compiler = new Compiler();
 		$this->composer = new Composer();
+		$this->sectionManage = new SectionManage();
 	}
 
 	public function setDefaultViewPath($path){
@@ -35,7 +37,7 @@ class View{
 
 	public function with($name, $value = ''){
 		if(empty($name)){
-			throw new Exception("Data is invalid.", 1);
+			throw new Exception("Var name is not valid.", 1);
 		}
 		if(is_array($name)){
 			$this->data = array_merge($this->data,$name);

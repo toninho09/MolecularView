@@ -23,6 +23,8 @@
 		public function register(\MolecularCore\Core &$app){
 			if (!isset(self::$instance)) {
 	            self::$instance = new $this->class($app);
+				if(!empty($app->getConfig('view.folder')))
+					self::$instance->setDefaultViewPath($app->getConfig('view.folder'));
 	        }
 		}
 		

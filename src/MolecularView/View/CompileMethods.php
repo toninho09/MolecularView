@@ -148,6 +148,22 @@ class CompileMethods{
         return "<?php default : ?>";
     }
 
+    public function compile_section($expression){
+        return '<?php $this->sectionManage->startSection('.$expression.'); ?>';
+    }
+
+    public function compile_endSection($expression){
+        return '<?php $this->sectionManage->stopSection(); ?>';
+    }
+
+    public function compile_yield($expression){
+        return '<?php echo $this->sectionManage->getSection('.$expression.'); ?>';
+    }
+
+    public function compile_include($expression){
+        return '<?php $this->render('.$expression.'); ?>';
+    }
+
     /**
      * create or redefine a new compile function
      * @param string $name
@@ -162,7 +178,8 @@ class CompileMethods{
      * @param $name
      * @return bool
      */
-    public function hasExtendCompile($name){
+    public function hasExtendCompile($name)
+    {
         return isset($this->customCompile[$name]) && is_callable($this->customCompile[$name]);
     }
 
