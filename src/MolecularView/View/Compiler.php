@@ -34,8 +34,7 @@ class Compiler{
 	 */
 	public function compile($file){
 		if(!is_file($file))
-			throw new \Exception("The file [$file] not exists.", 1);
-
+			throw new \Exception("The file '$file'' not exists.", 1);
 		if($this->checkHasCompiledView($file)) return $this->folder. DIRECTORY_SEPARATOR . $this->getViewCacheName($file);
 		$this->code = file_get_contents($file);
 		$statements = $this->getStatements($this->code);
@@ -53,10 +52,16 @@ class Compiler{
 		foreach($statements as $key => $value){
 			$method = 'compile_'.$value[1];
 			$params = isset($value[3]) ? $this->cleanParams($value[3]) : null;
+			//cuida dos metodos default de compilação
 			if(method_exists($this->compileMethods,$method)){
 				$this->code = str_replace($value[0],$this->compileMethods->$method($params),$this->code);
-			}elseif($this->compileMethods->hasExtendCompile($value[1])){
-				$this->code = str_replace($value[0],$this->compileMethods->executeExtendCompile($value[1],$params),$this->code);
+				//cuida dos metodos extendidos
+			}elseif($this->compileMethods->hasExtendCompile($value[1])) {
+				$this->code = str_replace($value[0], $this->compileMethods->executeExtendCompile($value[1], $params), $this->code);
+				//cuida dos metodos de extends
+			}elseif($value[1] == 'extends'){
+				$this->code = str_replace($value[0],'', $this->code);
+				$this->code .= '<?php $this->render('.$params.')?>';
 			}
 		}
 	}

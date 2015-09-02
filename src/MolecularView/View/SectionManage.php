@@ -24,12 +24,12 @@ class SectionManage
     public function stopSection(){
         if(empty($this->sectionStack)) throw new \Exception("Section stack is empty");
         $sectionName = array_pop($this->sectionStack);
-        $content = ob_get_clean();
-        debug($content);
+        $content = @ob_get_clean();
+        @ob_end_clean();
         if(empty($this->content[$sectionName])) $this->content[$sectionName] = '';
         $this->sections[$sectionName] = $this->content[$sectionName].$content;
         unset($this->content[$sectionName]);
-        $this->content[end($this->sectionStack)] .= $content;
+        if(!empty(end($this->sectionStack)))  $this->content[end($this->sectionStack)] .= $content;
     }
 
     public function getSection($name){

@@ -71,7 +71,7 @@ class View{
 		}else{
 			throw new \Exception("File [$fileFormat] Not Found.");
 		}
-		return ob_get_clean();
+		return @ob_get_flush();
 	}
 
 	public function composer($name,callable $function){
